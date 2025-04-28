@@ -1,0 +1,80 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('../images/panterabot.png');
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.chat-container {
+    width: 400px;
+    height: 500px;
+    background-color: #d6d6d6;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+}
+
+.chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #202020;
+    border-radius: 5px;
+    max-height: 350px;
+    font-size: 14px;
+}
+
+.user-message {
+    text-align: right;
+    background-color: #d6d6d6;
+    color: #202020;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 5px 0;
+    width: fit-content;
+    max-width: 80%;
+    word-wrap: break-word;
+    margin-left: auto;
+}
+
+.bot-message {
+    text-align: left;
+    background-color: #353535;
+    color: #d6d6d6;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 5px 0;
+    width: fit-content;
+    max-width: 80%;
+    word-wrap: break-word;
+    margin-right: auto;
+}
+
+#button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.button-option {
+    padding: 10px 15px;
+    background-color: #202020;
+    color: #d6d6d6;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.button-option:hover {
+    background-color: #353535;
+}

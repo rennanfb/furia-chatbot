@@ -1,8 +1,11 @@
+import Team from './team.js';
+
 export class ChatBot {
     constructor(name) {
         this.name = name;
         this.chatBox = document.getElementById('chat-box');
         this.buttonContainer = document.getElementById('button-container');
+        this.team = new Team();
     }
 
     showIntroduction() {
@@ -55,23 +58,27 @@ export class ChatBot {
     }
 
     handleMainOption(option) {
-        this.displayUserMessage(`Você escolheu: ${option}`);
         this.clearButtons();
 
         switch (option) {
             case "1":
+                this.displayUserMessage("Eu quero saber mais sobre a Empresa")
                 this.showAboutUs();
                 break;
             case "2":
+                this.displayUserMessage("Qual a atual escalação do time ?")
                 this.showCurrentTeamOptions();
                 break;
             case "3":
+                this.displayUserMessage("Quando será o proximo jogo da FURIA ?")
                 this.showNextGameInfo();
                 break;
             case "4":
+                this.displayUserMessage("Como foi o resultado dos ultimos jogos ?")
                 this.showLastGamesInfo();
                 break;
             case "5":
+                this.displayUserMessage("Quem ja jogou pela FURIA ?")
                 this.showLastPlayersInfo();
                 break;
             default:
@@ -81,47 +88,54 @@ export class ChatBot {
     }
 
     showAboutUs() {
-        this.displayBotMessage("Somos FURIA. Uma organização de esports que nasceu do desejo de representar o Brasil no CS e conquistou muito mais que isso...");
+        this.displayBotMessage(`Somos FURIA. Uma organização de esports que nasceu do desejo de representar o Brasil no CS 
+            e conquistou muito mais que isso: expandimos nossas ligas, disputamos os principais títulos, adotamos novos objetivos 
+            e ganhamos um propósito maior.`);
+
+        this.displayBotMessage(`Somos muito mais que o sucesso competitivo, somos um movimento sociocultural. 
+            Nossa história é de pioneirismo, grandes conquistas e tradição. Nosso presente é de desejo, garra e estratégia. `);
+
+        this.displayBotMessage(`A pantera estampada no peito estampa também nosso futuro de glória. Nossos pilares de performance, lifestyle, 
+            conteúdo, business, tecnologia e social são os principais constituintes do movimento FURIA, que representa uma 
+            unidade que respeita as individualidades e impacta positivamente os contextos em que se insere.`);
+
+        this.displayBotMessage(`Unimos pessoas e alimentamos sonhos dentro e fora dos jogos.`);
+
         this.backToMenu();
     }
 
     showCurrentTeamOptions() {
         this.clearButtons();
         this.displayBotMessage("O atual time de Counter-Strike da FURIA é composto pelos membros:");
-        const players = [
-            { text: "FalleN", value: "1" },
-            { text: "yuurih", value: "2" },
-            { text: "KSCERATO", value: "3" },
-            { text: "molodoy", value: "4" },
-            { text: "YEKINDAR", value: "5" },
-            { text: "sidde (Treinador)", value: "6" },
-            { text: "Hepa (Assistente)", value: "7" },
-            { text: "Voltar", value: "0" }
-        ];
+
+        //fazer o chatbot falar o nome dos membro, atualmente so está mostrando nos botoes
+
+        const players = this.team.getPlayers().map(player => ({
+            text: player.name,
+            value: player.id
+        }));
+
+        players.push({ text: "Voltar", value: "0" });
         this.createButtons(players, (value) => this.handlePlayerOption(value));
     }
 
     handlePlayerOption(option) {
-        this.displayUserMessage(`Você escolheu: ${option}`);
-        this.clearButtons();
-
-        const playerInfos = {
-            "1": "FalleN: Nascido em 30/05/1991, líder de duas conquistas de Major...",
-            "2": "yuurih: Brasileiro nascido em 22/12/1999, referência no cenário nacional.",
-            "3": "KSCERATO: Promovido da FURIA Academy em 2018, estrela em ascensão.",
-            "4": "molodoy: AWPer cazaque de 20 anos, destaque da AMKAL em 2025.",
-            "5": "YEKINDAR: Letão agressivo e confiante, famoso pela Virtus.pro.",
-            "6": "sidde: Técnico focado em disciplina e comunicação.",
-            "7": "Hepa: Conhecido pela inteligência tática e leitura de jogo."
-        };
 
         if (option === "0") {
-            this.showOptions();
-            return;
+            this.showOptions(); 
+            return;  
         }
+        const player = this.team.getPlayerById(option);
 
-        if (playerInfos[option]) {
-            this.displayBotMessage(playerInfos[option]);
+        this.displayUserMessage(`Quero saber mais sobre ${player.name}`);
+        this.clearButtons();
+
+        if (player) {
+            const descriptions = player.getPlayerDescription();
+        
+            descriptions.forEach(description => {
+                this.displayBotMessage(description);
+            });
         } else {
             this.displayBotMessage("Opção inválida.");
         }
@@ -130,7 +144,8 @@ export class ChatBot {
     }
 
     askAnotherPlayer() {
-        this.clearButtons(); // <<<<< limpar antes
+        this.clearButtons(); 
+
         this.displayBotMessage("Deseja saber sobre outro integrante?");
         const options = [
             { text: "Sim", value: "yes" },
@@ -146,33 +161,56 @@ export class ChatBot {
     }
 
     showNextGameInfo() {
-        this.displayBotMessage("Em breve teremos atualizações sobre os próximos jogos da FURIA! Fique ligado!");
+        this.displayBotMessage(`O proximo confronto do time da FURIA, ainda não tem data exata definida, mas será no PGL Astana 2025.`);
+
+        this.displayBotMessage(`O PGL Astana 2025 é um dos principais torneios de Counter-Strike 2 (CS2) do ano, reunindo 16 das 
+            melhores equipes do mundo em uma competição de alto nível.`);
+
+         this.displayBotMessage(`O evento acontecerá de 10 a 18 de maio de 2025, na Barys Arena, localizada em 
+            Astana, capital do Cazaquistão .`);
+
         this.backToMenu();
     }
 
     showLastGamesInfo() {
-        this.displayBotMessage("Últimos resultados:");
-        this.displayBotMessage("- FURIA 2x1 Team Liquid");
-        this.displayBotMessage("- FURIA 1x2 G2 Esports");
-        this.displayBotMessage("- FURIA 2x0 Imperial");
+        this.displayBotMessage("FURIA 0:2 TheMongolz | PGL Bucharest 2025 | 09/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz");
+        this.displayBotMessage("FURIA 0:2 Virtus.pro | PGL Bucharest 2025 | 08/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz");
+        this.displayBotMessage("FURIA 1:2 Complexity Gaming | PGL Bucharest 2025 | 07/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz");
+        this.displayBotMessage("FURIA 2:0 Apogee Esports | PGL Bucharest 2025 | 06/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz");
         this.backToMenu();
     }
 
     showLastPlayersInfo() {
-        this.displayBotMessage("Grandes nomes que já passaram pela FURIA:");
-        this.displayBotMessage("- VINI");
-        this.displayBotMessage("- arT");
-        this.displayBotMessage("- KSCERATO");
-        this.displayBotMessage("- yuurih");
-        this.displayBotMessage("- chelo");
+        this.displayBotMessage("A FURIA ja contou com diversos jogadores fenomenais, como");
+        this.displayBotMessage("skullz - Felipe Medeiros");
+        this.displayBotMessage("chelo - Marcelos Cespedes");
+        this.displayBotMessage("kye - Kayke Bertolucci");
+        this.displayBotMessage("arT - Andrei Piovezan");
+        this.displayBotMessage("Wicadia - Ali Haydar Yalçın");
+        this.displayBotMessage("MAJ3R - Engin Kupeli");
+        this.displayBotMessage("Woxic - Özgür Eker");
+        this.displayBotMessage("Calyx - Buğra Arkın");
+        this.displayBotMessage("XANTARES - Can Dörtkardeş");
+        this.displayBotMessage("drop - André Abreu");
+        this.displayBotMessage("saffee - Rafael Costa");
+        this.displayBotMessage("VINI - Vinicius Figueiredo");
+        this.displayBotMessage("guerri - Nicholas Nogueira");
+        this.displayBotMessage("honda - Lucas Cano");
+        this.displayBotMessage("junior - Paytyn Johnson");
+        this.displayBotMessage("HEN1 - Henrique Teles");
+        this.displayBotMessage("LUCAS1 - Lucas Teles");
+        this.displayBotMessage("ableJ - Rinaldo Moda Junior");
+        this.displayBotMessage("spacca - Guilherme Spacca");
+
         this.backToMenu();
     }
 
     backToMenu() {
         this.clearButtons();
-        this.displayBotMessage("O que mais deseja saber?");
         const options = [
-            { text: "Voltar ao menu principal", value: "menu" }
+            { text: "Quero outras informações", value: "menu" }
+
+            //criar botão para encerrar dialogo
         ];
         this.createButtons(options, (value) => {
             if (value === "menu") {

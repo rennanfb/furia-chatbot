@@ -184,14 +184,15 @@ export class ChatBot {
 
     showNextGameInfo() {
         this.displayBotMessage(`O proximo confronto do time da FURIA, ainda não tem data exata definida, mas será no PGL Astana 2025.`);
-
+    
         this.displayBotMessage(`O PGL Astana 2025 é um dos principais torneios de Counter-Strike 2 (CS2) do ano, reunindo 16 das 
-            melhores equipes do mundo em uma competição de alto nível.`);
-
-         this.displayBotMessage(`O evento acontecerá de 10 a 18 de maio de 2025, na Barys Arena, localizada em 
-            Astana, capital do Cazaquistão .`);
+        melhores equipes do mundo em uma competição de alto nível.`);
+    
+        this.displayBotMessage(`O evento acontecerá de 10 a 18 de maio de 2025, na Barys Arena, localizada em 
+        Astana, capital do Cazaquistão .`);
 
         this.backToMenu();
+
     }
 
     showLastGamesInfo() {
@@ -199,6 +200,7 @@ export class ChatBot {
         this.displayBotMessage("FURIA 0:2 Virtus.pro | PGL Bucharest 2025 | 08/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz");
         this.displayBotMessage("FURIA 1:2 Complexity Gaming | PGL Bucharest 2025 | 07/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz");
         this.displayBotMessage("FURIA 2:0 Apogee Esports | PGL Bucharest 2025 | 06/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz");
+
         this.backToMenu();
     }
 
@@ -233,6 +235,9 @@ export class ChatBot {
         messageElement.classList.add('bot-message');
         this.chatBox.appendChild(messageElement);
         this.chatBox.scrollTop = this.chatBox.scrollHeight;
+        setTimeout(() => {
+            this.scrollToBottom();
+        }, 5);
     }
 
     displayUserMessage(message) {
@@ -241,6 +246,9 @@ export class ChatBot {
         messageElement.classList.add('user-message');
         this.chatBox.appendChild(messageElement);
         this.chatBox.scrollTop = this.chatBox.scrollHeight;
+        setTimeout(() => {
+            this.scrollToBottom();
+        }, 5);
     }
 
     clearButtons() {
@@ -262,4 +270,7 @@ export class ChatBot {
         this.chatBox.innerHTML = '';
     }
 
+    scrollToBottom() {
+        this.chatBox.scrollTop = this.chatBox.scrollHeight;
+    }
 }

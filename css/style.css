@@ -1,6 +1,9 @@
 body {
     font-family: Arial, sans-serif;
     background-image: url('../images/panterabot.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     margin: 0;
     padding: 0;
     display: flex;
@@ -10,38 +13,44 @@ body {
 }
 
 .chat-container {
-    width: 400px;
-    height: 500px;
+    width: 90vw;
+    max-width: 30rem;
+    min-height: 75vh;
+    max-height: 85vh;
     background-color: #d6d6d6;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0.625rem;
+    box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    justify-content: center;
+    padding: 1.25rem;
     position: relative;
 }
 
 .chat-box {
     flex-grow: 1;
     overflow-y: auto;
-    margin-bottom: 20px;
-    padding: 10px;
+    margin-bottom: 1.25rem;
+    padding: 0.625rem;
     background-color: #202020;
-    border-radius: 5px;
-    max-height: 350px;
-    font-size: 14px;
+    border-radius: 0.3125rem;
+    font-size: 0.875rem;
+    height: auto; /* Deixando flexível para o tamanho do conteúdo */
+}
+
+.user-message, .bot-message {
+    padding: 0.3125rem 0.625rem;
+    margin: 0.3125rem 0;
+    border-radius: 0.3125rem;
+    width: fit-content;
+    max-width: 80%;
+    word-wrap: break-word;
 }
 
 .user-message {
     text-align: right;
     background-color: #d6d6d6;
     color: #202020;
-    border-radius: 5px;
-    padding: 5px 10px;
-    margin: 5px 0;
-    width: fit-content;
-    max-width: 80%;
-    word-wrap: break-word;
     margin-left: auto;
 }
 
@@ -49,32 +58,85 @@ body {
     text-align: left;
     background-color: #353535;
     color: #d6d6d6;
-    border-radius: 5px;
-    padding: 5px 10px;
-    margin: 5px 0;
-    width: fit-content;
-    max-width: 80%;
-    word-wrap: break-word;
     margin-right: auto;
 }
 
 #button-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 0.625rem;
     justify-content: center;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
 }
 
 .button-option {
-    padding: 10px 15px;
+    padding: 0.625rem 0.9375rem;
     background-color: #202020;
     color: #d6d6d6;
     border: none;
-    border-radius: 5px;
+    border-radius: 0.3125rem;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 0.875rem;
 }
 
 .button-option:hover {
     background-color: #353535;
+}
+
+/* 1. Big Screens (desktops, notebooks) */
+@media (min-width: 1025px) {
+    .chat-container {
+        max-width: 33rem;
+        padding: 2rem;
+    }
+
+    .chat-box {
+        font-size: 1rem;
+    }
+
+    .button-option {
+        font-size: 1rem;
+        padding: 0.75rem 1.25rem;
+    }
+}
+
+/* 2. Medium Screens (tablets) */
+@media (max-width: 1024px) {
+    .chat-container {
+        max-width: 55vw;
+        min-height: 80vh;
+        padding: 1.25rem;
+    }
+
+    .chat-box {
+        font-size: 0.9rem;
+    }
+
+    .button-option {
+        font-size: 0.9rem;
+        padding: 0.625rem 1rem;
+    }
+}
+
+/* 3. Small Screens (cellphones) */
+@media (max-width: 600px) {
+    .chat-container {
+        min-width: 50vw;
+        min-height: 80vh;
+        padding: 1rem;
+    }
+
+    .chat-box {
+        font-size: 0.9rem;
+    }
+
+    .user-message, .bot-message {
+        font-size: 0.9rem;
+    }
+
+    .button-option {
+        font-size: 0.9rem;
+        padding: 0.50rem 0.70rem;
+    }
 }

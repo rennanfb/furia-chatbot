@@ -1,26 +1,42 @@
 import { UIManager } from './UIManager.js';
-import Team from './team.js';
+import Team from './Team.js';
 
 export class ConversationManager {
+    // Creates an instance of ConversationManager.
     constructor() {
         this.uiManager = new UIManager('chat-box', 'button-container');
         this.team = new Team();
     }
 
-    showIntroduction() {
-        this.uiManager.clearMessages();
-
-        const msgs = [
-            "Fala furioso, seja bem-vindo ao canal de Counter-Strike do Time FURIA, eu sou o FuriaChatBot!",
-
-            "Tenho diversas informações sobre o nosso time ao seu dispor."
-        ];
-        msgs.forEach(msg => this.uiManager.displayBotMessage(msg));
-
-        this.showOptions();
+    // Load team players from a data file
+    async initialize() {
+        await this.team.loadPlayersFromFile();
     }
 
-    showOptions() {
+    // Load messages from a data file
+    async loadMessages(fileName) {
+        try {
+            const response = await fetch(`../data/${fileName}`);
+            const data = await response.json();
+            return data.messages || [];
+        } catch (error) {
+            console.error(`Erro ao carregar o arquivo ${fileName}:`, error);
+            return ["Desculpe, não conseguimos carregar as mensagens agora."];
+        }
+    }
+
+    // Load and display introduction messages
+    async displayIntro() {
+        this.uiManager.clearMessages();
+
+        const msgs = await this.loadMessages("introMessages.json");
+        msgs.forEach(msg => this.uiManager.displayBotMessage(msg));
+
+        this.displayMainOptions();
+    }
+
+    // Display main conversation options
+    displayMainOptions() {
         this.uiManager.clearButtons();
         this.uiManager.displayBotMessage("Sobre o que está curioso?");
         const options = [
@@ -33,54 +49,23 @@ export class ConversationManager {
         this.uiManager.createButtons(options, (value) => this.handleMainOption(value));
     }
 
-    askAnotherPlayer() {
-        this.uiManager.clearButtons(); 
-
-        this.uiManager.displayBotMessage("Deseja saber sobre outro integrante?");
-        const options = [
-            { text: "Sim", value: "yes" },
-            { text: "Não", value: "no" }
-        ];
-        this.uiManager.createButtons(options, (choice) => {
-            if (choice === "yes") {
-                this.uiManager.displayUserMessage("Sim, eu gostaria");
-
-                this.showCurrentTeamOptions();
-            } else {
-                this.uiManager.displayUserMessage("Por enquanto, não")
-                this.showOptions();
-            }
-        });
-    }
-
-    showAboutUs() {
-        const msgs = [
-            `Somos FURIA. Uma organização de esports que nasceu do desejo de representar o Brasil no CS 
-            e conquistou muito mais que isso: expandimos nossas ligas, disputamos os principais títulos, adotamos novos objetivos 
-            e ganhamos um propósito maior.`,
-
-            `Somos muito mais que o sucesso competitivo, somos um movimento sociocultural. 
-            Nossa história é de pioneirismo, grandes conquistas e tradição. Nosso presente é de desejo, garra e estratégia. `,
-
-            `A pantera estampada no peito estampa também nosso futuro de glória. Nossos pilares de performance, lifestyle, 
-            conteúdo, business, tecnologia e social são os principais constituintes do movimento FURIA, que representa uma 
-            unidade que respeita as individualidades e impacta positivamente os contextos em que se insere.`,
-
-            `Unimos pessoas e alimentamos sonhos dentro e fora dos jogos.`
-        ];
+    // Load and display about us messages
+    async displayAboutUs() {
+        const msgs = await this.loadMessages("aboutUsMessages.json");
         msgs.forEach(msg => this.uiManager.displayBotMessage(msg));
+
         this.backToMenu();
     }
 
-    showCurrentTeamOptions() {
+    // Display players from current team and options for more information about them
+    displayCurrentTeamOptions() {
         this.uiManager.clearButtons();
     
         this.uiManager.displayBotMessage("O atual time de Counter-Strike da FURIA é composto pelos membros:");
     
         const players = this.team.getPlayers(); 
     
-        players.forEach(player => {
-            this.uiManager.displayBotMessage(`• ${player.name} - ${player.role}`);
+        players.forEach(player => { this.uiManager.displayBotMessage(`• ${player.name} - ${player.role}`);
         });
 
         this.uiManager.displayBotMessage("Gostaria de saber mais sobre quem?");
@@ -97,69 +82,54 @@ export class ConversationManager {
         });
     }
 
-    showNextGameInfo() {
-        const msgs = [
-            `O proximo confronto do time da FURIA, ainda não tem data exata definida, mas será no PGL Astana 2025.`,
+    // Ask for another player
+    askAnotherPlayer() {
+        this.uiManager.clearButtons(); 
 
-            `O PGL Astana 2025 é um dos principais torneios de Counter-Strike 2 (CS2) do ano, reunindo 16 das 
-            melhores equipes do mundo em uma competição de alto nível.`,
-
-            `O evento acontecerá de 10 a 18 de maio de 2025, na Barys Arena, localizada em 
-            Astana, capital do Cazaquistão .`,
-
+        this.uiManager.displayBotMessage("Deseja saber sobre outro integrante?");
+        const options = [
+            { text: "Sim", value: "yes" },
+            { text: "Não", value: "no" }
         ];
+        this.uiManager.createButtons(options, (choice) => {
+            if (choice === "yes") {
+                this.uiManager.displayUserMessage("Sim, eu gostaria");
+
+                this.displayCurrentTeamOptions();
+            } else {
+                this.uiManager.displayUserMessage("Por enquanto, não")
+                this.displayMainOptions();
+            }
+        });
+    }
+
+    // Load and display next game messages
+    async displayNextGame() {
+        const msgs = await this.loadMessages("nextGameMessages.json");
         msgs.forEach(msg => this.uiManager.displayBotMessage(msg));
 
         this.backToMenu();
     }
 
-    showLastGamesInfo() {
-
-        const msgs = [
-            "FURIA 0:2 TheMongolz | PGL Bucharest 2025 | 09/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz",
-
-            "FURIA 0:2 Virtus.pro | PGL Bucharest 2025 | 08/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz",
-
-            "FURIA 1:2 Complexity Gaming | PGL Bucharest 2025 | 07/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz",
-
-            "FURIA 2:0 Apogee Esports | PGL Bucharest 2025 | 06/04/2025 | Escalação: FalleN, chelo, yuurih, KSCERATO, skullz"
-
-        ];
+    // Load and display previous games messages
+    async displayPreviousGames() {
+        const msgs = await this.loadMessages("lastGameMessages.json");
         msgs.forEach(msg => this.uiManager.displayBotMessage(msg));
 
         this.backToMenu();
     }
 
-    showLastPlayersInfo() {
-
-        const names = [
-            "skullz - Felipe Medeiros",
-            "chelo - Marcelos Cespedes",
-            "kye - Kayke Bertolucci",
-            "arT - Andrei Piovezan",
-            "Wicadia - Ali Haydar Yalçın",
-            "MAJ3R - Engin Kupeli",
-            "Woxic - Özgür Eker",
-            "Calyx - Buğra Arkın",
-            "XANTARES - Can Dörtkardeş",
-            "drop - André Abreu",
-            "saffee - Rafael Costa",
-            "VINI - Vinicius Figueiredo",
-            "guerri - Nicholas Nogueira",
-            "honda - Lucas Cano",
-            "junior - Paytyn Johnson",
-            "HEN1 - Henrique Teles",
-            "LUCAS1 - Lucas Teles",
-            "ableJ - Rinaldo Moda Junior",
-            "spacca - Guilherme Spacca"
-        ];
-
+    // Load and display former players
+    async displayFormerPlayers() {
         this.uiManager.displayBotMessage("A FURIA já contou com diversos jogadores fenomenais, como:");
-        names.forEach(name => this.uiManager.displayBotMessage(`• ${name}`));
+
+        const msgs = await this.loadMessages("formerPlayers.json");
+        msgs.forEach(msg => this.uiManager.displayBotMessage(`• ${msg}`));
 
         this.backToMenu();
     }
 
+    // Asks if the conversation should goes on
     backToMenu() {
         this.uiManager.clearButtons();
 
@@ -174,7 +144,7 @@ export class ConversationManager {
             switch (value) {
                 case "menu":
                     this.uiManager.displayUserMessage("Eu gostaria de saber mais sobre a FURIA")
-                    this.showOptions();
+                    this.displayMainOptions();
                     break;
         
                 case "encerrar":
@@ -185,51 +155,54 @@ export class ConversationManager {
         });
     }
 
+    // End the conversation end provide a button to restart
     endConversation() {
         this.uiManager.clearButtons();
         this.uiManager.displayBotMessage("Obrigado pela conversa furioso, se precisar de mais informações estarei aqui.")
 
         const options = [
-            { text: "FuriaChatBot, está ai?", value: "1" },
+            { text: "ChatBot, está ai?", value: "1" },
         ];
-        this.uiManager.createButtons(options, (value) => this.showIntroduction())
+        this.uiManager.createButtons(options, (value) => this.displayIntro())
     }
 
+    // Read the response from the main options and answers it
     handleMainOption(option) {
         this.uiManager.clearButtons();
 
         switch (option) {
             case "1":
                 this.uiManager.displayUserMessage("Eu quero saber mais sobre a FURIA")
-                this.showAboutUs();
+                this.displayAboutUs();
                 break;
             case "2":
                 this.uiManager.displayUserMessage("Qual a atual escalação do time ?")
-                this.showCurrentTeamOptions();
+                this.displayCurrentTeamOptions();
                 break;
             case "3":
                 this.uiManager.displayUserMessage("Quando será o proximo jogo da FURIA ?")
-                this.showNextGameInfo();
+                this.displayNextGame();
                 break;
             case "4":
                 this.uiManager.displayUserMessage("Como foi o resultado dos ultimos jogos ?")
-                this.showLastGamesInfo();
+                this.displayPreviousGames();
                 break;
             case "5":
                 this.uiManager.displayUserMessage("Quem ja jogou pela FURIA ?")
-                this.showLastPlayersInfo();
+                this.displayFormerPlayers();
                 break;
             default:
                 this.uiManager.displayBotMessage("Opção inválida. Tente novamente.");
-                this.showOptions();
+                this.displayMainOptions();
         }
     }
 
+    // Read the response from the current team options and answers it
     handlePlayerOption(option) {
 
         if (option === "0") {
             this.uiManager.displayUserMessage("Por enquanto, ninguém")
-            this.showOptions(); 
+            this.displayMainOptions(); 
             return;  
         }
         const player = this.team.getPlayerById(option);
@@ -240,9 +213,7 @@ export class ConversationManager {
         if (player) {
             const descriptions = player.getPlayerDescription();
         
-            descriptions.forEach(description => {
-                this.uiManager.displayBotMessage(description);
-            });
+            descriptions.forEach(description => { this.uiManager.displayBotMessage(description);});
         } else {
             this.uiManager.displayBotMessage("Opção inválida.");
         }

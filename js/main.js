@@ -1,8 +1,8 @@
-import { ChatBot } from './chatbot.js';
+import { ConversationManager } from './ConversationManager.js';
 
 async function main() {
-    const bot = new ChatBot("FuriaChatBot");
-    bot.showIntroduction();
+    const conversationManager = new ConversationManager();
+    conversationManager.showIntroduction();
 }
 
 main();

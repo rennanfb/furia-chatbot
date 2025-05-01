@@ -11,5 +11,4 @@ class Player {
     }
 }
 
-// Exporta a classe para ser utilizada em outros arquivos
 export default Player;

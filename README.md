@@ -38,8 +38,12 @@ To run this project, simply open the index.html file in your browser. For a more
 1. **Clone o repositório / Clone the repository:**
    - Abra o terminal e clone o repositório com o seguinte comando:
      ```bash
-     git clone https://github.com/usuario/nome-do-repositorio.git
+     git clone https://github.com/rennanfb/furia-chatbot.git
      ```
+   - Open the terminal and clone the repository with the following command:
+     ```bash
+     git clone https://github.com/rennanfb/furia-chatbot.git
+     ``````
 
 2. **Abra o arquivo `index.html` no seu navegador / Open the `index.html` file in your browser:**
    - Para uma experiência interativa, use a extensão **Live Server** no VSCode:

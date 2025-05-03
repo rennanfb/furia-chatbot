@@ -10,7 +10,7 @@ class Team {
     // Load players from a JSON File
     async loadPlayersFromFile(fileName = 'currentPlayers.json') {
         try {
-            const response = await fetch(`./data/${fileName}`);
+            const response = await fetch(`data/${fileName}`);
             const data = await response.json();
             this.players = data.players.map(
                 p => new Player(p.name, p.id, p.role, p.description)

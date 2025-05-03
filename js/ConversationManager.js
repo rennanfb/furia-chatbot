@@ -16,7 +16,7 @@ export class ConversationManager {
     // Load messages from a data file
     async loadMessages(fileName) {
         try {
-            const response = await fetch(`../data/${fileName}`);
+            const response = await fetch(`data/${fileName}`);
             const data = await response.json();
             return data.messages || [];
         } catch (error) {
